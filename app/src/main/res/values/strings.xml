@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Sonic Music Collection</string>
+    <string name="languageTitle">Language Selection</string>
+    <string name="languageChooseTitle">Language</string>
+    <string name="languageSummary">Choose a language</string>
+    <string name="themeTitle">Theme selection</string>
+    <string name="themeChooseTitle">Theme</string>
+    <string name="themeSummary">Choose a theme</string>
+    <string name="languageDialogTitle">Choose a language</string>
+    <string name="themeDialogTitle">Choose a theme</string>
+    <string name="aboutMessage">about</string>
+    <string name="creditsMessage">credits</string>
 </resources>
