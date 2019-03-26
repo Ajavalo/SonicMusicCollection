@@ -22,6 +22,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+
+import es.unex.saee.sonicmusiccollection.database.GameListCRUD;
 
 public class GameListManager extends AppCompatActivity {
 
@@ -43,8 +46,8 @@ public class GameListManager extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do_manager);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    //    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+      //  setSupportActionBar(toolbar);
 
         // - Get a reference to the RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.game_recycler_view);
@@ -132,32 +135,9 @@ public class GameListManager extends AppCompatActivity {
 
     // Load stored ToDoItems
     private void loadItems() {
-        BufferedReader reader = null;
-        try {
-            FileInputStream fis = openFileInput(FILE_NAME);
-            reader = new BufferedReader(new InputStreamReader(fis));
-
-            String title = null;
-            String abbv = null;
-
-            while (null != (title = reader.readLine())) {
-                abbv = reader.readLine();
-                mAdapter.add(new GameListItem(title, abbv));
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (null != reader) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        GameListCRUD crud = GameListCRUD.getInstance(this);
+        List<GameListItem> items = crud.getAll();
+        mAdapter.load(items);
     }
 
     // Save ToDoItems to file

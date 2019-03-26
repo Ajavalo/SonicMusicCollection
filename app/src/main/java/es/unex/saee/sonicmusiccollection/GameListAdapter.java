@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHolder> {
 
-    private final List<GameListItem> mItems = new ArrayList<GameListItem>();
+    private List<GameListItem> mItems = new ArrayList<GameListItem>();
 
     public interface OnItemClickListener {
         void onItemClick(GameListItem item);     //Type of the element to be returned
@@ -26,6 +26,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
     public GameListAdapter(OnItemClickListener listener) {
 
         this.listener = listener;
+        
     }
 
     // Create new views (invoked by the layout manager)
@@ -62,6 +63,14 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
     public void clear(){
 
         mItems.clear();
+        notifyDataSetChanged();
+
+    }
+
+    public void load(List<GameListItem> items){
+
+        mItems.clear();
+        mItems = items;
         notifyDataSetChanged();
 
     }

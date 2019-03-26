@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".GameListManager" android:label="@string/app_name">
@@ -17,18 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Settings" android:label="">
-            <intent-filter>
-                <action android:name="es.unex.saee.sonicmusiccollection.SETTINGS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity android:name=".About" android:label="">
-            <intent-filter>
-                <action android:name="es.unex.saee.sonicmusiccollection.ABOUT" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
     </application>
 

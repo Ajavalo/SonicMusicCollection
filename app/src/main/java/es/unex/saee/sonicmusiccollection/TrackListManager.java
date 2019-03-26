@@ -42,20 +42,19 @@ public class TrackListManager extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_to_do_manager);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+      //  setContentView(R.layout.activity_to_do_manager);
+      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+      //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+       // fab.setOnClickListener(new View.OnClickListener() {
+         /*   public void onClick(View view) {
                 //TODO - Attach Listener to FloatingActionButton. Implement onClick()
 
 
             }
         });
-
+*/
         //TODO - Get a reference to the RecyclerView
 
 
@@ -154,17 +153,17 @@ public class TrackListManager extends AppCompatActivity {
             while (null != (title = reader.readLine())) {
                 priority = reader.readLine();
                 status = reader.readLine();
-                date = TrackListItem.FORMAT.parse(reader.readLine());
-                mAdapter.add(new TrackListItem(title, Priority.valueOf(priority),
-                        Status.valueOf(status), date));
+               // date = TrackListItem.FORMAT.parse(reader.readLine());
+                //mAdapter.add(new TrackListItem(title, Priority.valueOf(priority),
+                  //      Status.valueOf(status), date));
             }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+  //      } catch (ParseException e) {
+    //        e.printStackTrace();
         } finally {
             if (null != reader) {
                 try {
