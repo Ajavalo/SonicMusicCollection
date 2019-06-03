@@ -2,26 +2,22 @@ package es.unex.saee.sonicmusiccollection;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 import es.unex.saee.sonicmusiccollection.database.GameListCRUD;
@@ -29,9 +25,8 @@ import es.unex.saee.sonicmusiccollection.database.GameListCRUD;
 public class GameListManager extends AppCompatActivity {
 
     // Add a ToDoItem Request Code
-    private static final int ADD_TODO_ITEM_REQUEST = 0;
+    private static final int ADD_GAMELIST_ITEM_REQUEST = 0;
 
-    private static final String FILE_NAME = "TodoManagerActivityData.txt";
     private static final String TAG = "Lab-UserInterface";
 
     // IDs for menu items
@@ -45,9 +40,9 @@ public class GameListManager extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_to_do_manager);
-    //    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-      //  setSupportActionBar(toolbar);
+        setContentView(R.layout.game_list_manager);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // - Get a reference to the RecyclerView
         mRecyclerView = (RecyclerView) findViewById(R.id.game_recycler_view);
@@ -56,16 +51,23 @@ public class GameListManager extends AppCompatActivity {
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
+        // use a linear layout manager
         // - Set a Linear Layout Manager to the RecyclerView
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-
         // - Create a new Adapter for the RecyclerView
-        mAdapter = new GameListAdapter(null);
+        // specify an adapter (see also next example)
+        mAdapter = new GameListAdapter(this, new GameListAdapter.OnItemClickListener() {
+            @Override public void onItemClick(GameListItem item) {
+                Snackbar.make(GameListManager.this.getCurrentFocus(), "Item "+item.getTitle()+" Clicked", Snackbar.LENGTH_LONG).show();
+            }
+        });
 
         // - Attach the adapter to the RecyclerView
         mRecyclerView.setAdapter(mAdapter);
+
+        GameListCRUD crud = GameListCRUD.getInstance(this);
 
     }
 
@@ -144,7 +146,7 @@ public class GameListManager extends AppCompatActivity {
     private void saveItems() {
         PrintWriter writer = null;
         try {
-            FileOutputStream fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput("games.txt", MODE_PRIVATE);
             writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
                     fos)));
 

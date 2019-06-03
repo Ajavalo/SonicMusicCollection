@@ -103,10 +103,10 @@ public class GameListCRUD {
 
         // New value for one column
         ContentValues values = new ContentValues();
-        values.put(DBContract.TodoItem.COLUMN_NAME_STATUS, status.name());
+        values.put(DBContract.GameListItem.COLUMN_NAME_STATUS, status.name());
 
         // Which row to update, based on the ID
-        String selection = DBContract.TodoItem._ID + " = ?";
+        String selection = DBContract.GameListItem._ID + " = ?";
         String[] selectionArgs = { Long.toString(ID) };
 
         int count = db.update(

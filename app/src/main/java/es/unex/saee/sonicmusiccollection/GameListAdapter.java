@@ -1,5 +1,6 @@
 package es.unex.saee.sonicmusiccollection;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.List;
 public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHolder> {
 
     private List<GameListItem> mItems = new ArrayList<GameListItem>();
+    Context mContext;
 
     public interface OnItemClickListener {
         void onItemClick(GameListItem item);     //Type of the element to be returned
@@ -23,8 +25,8 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
     private final OnItemClickListener listener;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public GameListAdapter(OnItemClickListener listener) {
-
+    public GameListAdapter(Context context, OnItemClickListener listener) {
+        mContext = context;
         this.listener = listener;
         
     }
