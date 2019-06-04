@@ -58,7 +58,7 @@ public class GameListCRUD {
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
             do {
-                items.add(getToDoItemFromCursor(cursor));
+                items.add(getGameListItemFromCursor(cursor));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -122,7 +122,7 @@ public class GameListCRUD {
         if (mDbHelper!=null) mDbHelper.close();
     }
 
-    public static GameListItem getToDoItemFromCursor(Cursor cursor) {
+    public static GameListItem getGameListItemFromCursor(Cursor cursor) {
 
         long ID = cursor.getInt(cursor.getColumnIndex(DBContract.GameListItem._ID));
         String title = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_TITLE));
