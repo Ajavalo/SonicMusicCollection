@@ -37,6 +37,8 @@ public class GameListManager extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private GameListAdapter mAdapter;
 
+    GameListCRUD crud;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +63,23 @@ public class GameListManager extends AppCompatActivity {
         mAdapter = new GameListAdapter(this, new GameListAdapter.OnItemClickListener() {
             @Override public void onItemClick(GameListItem item) {
                 Snackbar.make(GameListManager.this.getCurrentFocus(), "Item "+item.getTitle()+" Clicked", Snackbar.LENGTH_LONG).show();
+                gotoDescription(item.getTitle());
             }
         });
 
         // - Attach the adapter to the RecyclerView
         mRecyclerView.setAdapter(mAdapter);
 
-        GameListCRUD crud = GameListCRUD.getInstance(this);
+        crud = GameListCRUD.getInstance(this);
+        crud.insert(new GameListItem("Juego 1", "JG1"));
+        crud.insert(new GameListItem("Juego 2", "JG2"));
+
+    }
+
+    private void gotoDescription(String title){
+        Intent intent = new Intent(this, es.unex.saee.sonicmusiccollection.GameDescription.class);
+        intent.putExtra("GAME_MESSAGE", title);
+        startActivity(intent);
 
     }
 
