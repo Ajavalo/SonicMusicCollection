@@ -1,5 +1,6 @@
 package es.unex.saee.sonicmusiccollection;
 
+import android.arch.persistence.room.Entity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import es.unex.saee.sonicmusiccollection.database.GameListCRUD;
 
+@Entity(tableName = "games")
 public class GameListManager extends AppCompatActivity {
 
     // Add a ToDoItem Request Code
