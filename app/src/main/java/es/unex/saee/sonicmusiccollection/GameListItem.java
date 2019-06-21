@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-@Entity(tableName = "Game")
+@Entity(tableName = "game")
 public class GameListItem {
 
     @Ignore
@@ -26,45 +26,46 @@ public class GameListItem {
     public final static String FILENAME = "filename";
 
     @PrimaryKey(autoGenerate = true)
-    private static long mId;
-    private static String mTitle = new String();
-    private static String mAbbv = new String();
+    private long id;
+    private String title = new String();
+    private String abbv = new String();
 
     @Ignore
     GameListItem(String title, String abbv) {
-        this.mTitle = title;
-        this.mAbbv = abbv;
+        this.title = title;
+        this.abbv = abbv;
     }
 
     public GameListItem(long id, String title, String abbv) {
-        this.mId = id;
-        this.mTitle = title;
-        this.mAbbv = abbv;
+        this.id = id;
+        this.title = title;
+        this.abbv = abbv;
     }
 
     // Create a new ToDoItem from data packaged in an Intent
     @Ignore
     public GameListItem(Intent intent) {
 
-        mTitle = intent.getStringExtra(GameListItem.TITLE);
-        mAbbv = intent.getStringExtra(GameListItem.ABBV);
+        title = intent.getStringExtra(GameListItem.TITLE);
+        abbv = intent.getStringExtra(GameListItem.ABBV);
 
     }
-    @Ignore
-    public static String getTitle() {
-        return mTitle;
+
+    public long getId() { return id; }
+    public void setId(long id) {
+        this.id = id;
     }
-    @Ignore
-    public static void setTitle(String title) {
-        mTitle = title;
+    public String getTitle() {
+        return title;
     }
-    @Ignore
-    public static String getAbbv() {
-        return mAbbv;
+    public void setTitle(String title) {
+        this.title = title;
     }
-    @Ignore
-    public static void setAbbv(String abbv) {
-        mAbbv = abbv;
+    public String getAbbv() {
+        return abbv;
+    }
+    public void setAbbv(String abbv) {
+        this.abbv = abbv;
     }
 
     // Take a set of String data values and
@@ -78,11 +79,11 @@ public class GameListItem {
     }
     @Ignore
     public String toString() {
-        return mTitle + ITEM_SEP + mAbbv;
+        return title + ITEM_SEP + abbv;
     }
     @Ignore
     public String toLog() {
-        return "Title:" + mTitle + ITEM_SEP + "Abbv:" + mAbbv;
+        return "Title:" + title + ITEM_SEP + "Abbv:" + abbv;
     }
 
 }

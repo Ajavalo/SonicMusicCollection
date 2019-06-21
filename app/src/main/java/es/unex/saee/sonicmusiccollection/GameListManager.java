@@ -1,10 +1,16 @@
 package es.unex.saee.sonicmusiccollection;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,10 +27,11 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import es.unex.saee.sonicmusiccollection.database.GameDatabase;
 import es.unex.saee.sonicmusiccollection.database.GameListCRUD;
 
-@Entity(tableName = "games")
-public class GameListManager extends AppCompatActivity {
+public class GameListManager extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     // Add a ToDoItem Request Code
     private static final int ADD_GAMELIST_ITEM_REQUEST = 0;
@@ -44,7 +51,7 @@ public class GameListManager extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_list_manager);
+        setContentView(R.layout.activity_drawer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -72,9 +79,18 @@ public class GameListManager extends AppCompatActivity {
         // - Attach the adapter to the RecyclerView
         mRecyclerView.setAdapter(mAdapter);
 
-        crud = GameListCRUD.getInstance(this);
-        crud.insert(new GameListItem("Juego 1", "JG1"));
-        crud.insert(new GameListItem("Juego 2", "JG2"));
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //crud = GameListCRUD.getInstance(this);
+        new PopulateDb().execute(new GameListItem("Juego 1", "JG1"));
+        new PopulateDb().execute(new GameListItem("Juego 2", "JG2"));
 
     }
 
@@ -118,6 +134,16 @@ public class GameListManager extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
@@ -140,6 +166,31 @@ public class GameListManager extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     private void dump() {
 
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
@@ -151,9 +202,10 @@ public class GameListManager extends AppCompatActivity {
 
     // Load stored ToDoItems
     private void loadItems() {
-        GameListCRUD crud = GameListCRUD.getInstance(this);
-        List<GameListItem> items = crud.getAll();
-        mAdapter.load(items);
+//        GameListCRUD crud = GameListCRUD.getInstance(this);
+//        List<GameListItem> items = crud.getAll();
+//        mAdapter.load(items);
+        new LoadFromDb().execute();
     }
 
     // Save ToDoItems to file
@@ -185,6 +237,41 @@ public class GameListManager extends AppCompatActivity {
             e.printStackTrace();
         }
         Log.i(TAG, msg);
+    }
+
+    private class LoadFromDb extends AsyncTask<Void, Void, List<GameListItem>> {
+
+        @Override
+        protected List<GameListItem> doInBackground(final Void... voids) {
+            GameDatabase gameDb = GameDatabase.getDatabase(GameListManager.this);
+            List<GameListItem> games = gameDb.GameListItemDAO().getAll();
+            return games;
+        }
+
+        @Override
+        protected void onPostExecute (List<GameListItem> games){
+            super.onPostExecute(games);
+            mAdapter.load(games);
+        }
+
+    }
+
+    private class PopulateDb extends AsyncTask<GameListItem, Void, GameListItem> {
+
+        @Override
+        protected GameListItem doInBackground(final GameListItem... games) {
+            GameDatabase gameDb = GameDatabase.getDatabase(GameListManager.this);
+            long id = gameDb.GameListItemDAO().insert(games[0]);
+            games[0].setId(id);
+            return games[0];
+        }
+
+        @Override
+        protected void onPostExecute (GameListItem game){
+            super.onPostExecute(game);
+            mAdapter.add(game);
+        }
+
     }
 
 }

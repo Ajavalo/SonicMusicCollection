@@ -100,10 +100,10 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
         public void bind(final GameListItem gameListItem, final OnItemClickListener listener) {
 
             // - Display Title in TextView
-            title.setText(GameListItem.getTitle());
+            title.setText(gameListItem.getTitle());
 
             // - Display Abbv in Button
-            button.setText(GameListItem.getAbbv());
+            button.setText(gameListItem.getAbbv());
 
             itemView.setOnClickListener(new View.OnClickListener() {
 
