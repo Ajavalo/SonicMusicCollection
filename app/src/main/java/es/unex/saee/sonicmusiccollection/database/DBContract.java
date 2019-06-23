@@ -15,4 +15,13 @@ public class DBContract {
 
     }
 
+    public static class TrackListItem implements BaseColumns {
+        public static final String TABLE_NAME = "track";
+        public static final String COLUMN_NAME_NAME = "name";
+        //public static final String COLUMN_NAME_ABBV = "abbv";
+        //    public static final String COLUMN_NAME_PRIORITY = "priority";
+        //    public static final String COLUMN_NAME_DATE = "date";
+
+    }
+
 }

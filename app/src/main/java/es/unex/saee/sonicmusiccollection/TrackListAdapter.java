@@ -1,6 +1,8 @@
 package es.unex.saee.sonicmusiccollection;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -12,7 +14,8 @@ import java.util.List;
 
 public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.ViewHolder> {
 
-    private final List<TrackListItem> mItems = new ArrayList<TrackListItem>();
+    private List<TrackListItem> mItems = new ArrayList<TrackListItem>();
+    Context mContext;
 
     public interface OnItemClickListener {
         void onItemClick(TrackListItem item);     //Type of the element to be returned
@@ -21,8 +24,8 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
     private final OnItemClickListener listener;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public TrackListAdapter(OnItemClickListener listener) {
-
+    public TrackListAdapter(Context context, OnItemClickListener listener) {
+        mContext = context;
         this.listener = listener;
     }
 
@@ -30,8 +33,9 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
     @Override
     public TrackListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                      int viewType) {
-        //TODO - Inflate the View for every element
-        View v = null;
+        //Inflate the View for every element
+        View v = (View) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.tracklist_item, parent, false);
 
         return new ViewHolder(v);
     }
@@ -63,6 +67,14 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
 
     }
 
+    public void load(List<TrackListItem> items){
+
+        mItems.clear();
+        mItems = items;
+        notifyDataSetChanged();
+
+    }
+
     public Object getItem(int pos) {
 
         return mItems.get(pos);
@@ -71,22 +83,20 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView title;
-        private CheckBox statusView;
-        private TextView priorityView;
-        private TextView dateView;
+        private TextView name;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            //TODO - Get the references to every widget of the Item View
+            //Get the references to every widget of the Item View
+            name = (TextView) itemView.findViewById(R.id.trackName);
 
         }
 
-        public void bind(final TrackListItem toDoItem, final OnItemClickListener listener) {
+        public void bind(final TrackListItem trackListItem, final OnItemClickListener listener) {
 
-            //TODO - Display Title in TextView
-
+            //Display Name in TextView
+            name.setText(trackListItem.getName());
 
             //TODO - Display Priority in a TextView
 
@@ -98,24 +108,12 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.View
             // TODO - Set up Status CheckBox
 
 
-            statusView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView,
-                                             boolean isChecked) {
-
-
-                    // TODO - Set up and implement an OnCheckedChangeListener
-                    // is called when the user toggles the status checkbox
-
-
-                }});
-
-
             itemView.setOnClickListener(new View.OnClickListener() {
 
+                //Open selected Track
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(toDoItem);
+                    listener.onItemClick(trackListItem);
                 }
             });
         }

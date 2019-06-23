@@ -6,8 +6,9 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import es.unex.saee.sonicmusiccollection.GameListItem;
+import es.unex.saee.sonicmusiccollection.TrackListItem;
 
-@Database(entities = {GameListItem.class}, version = 1)
+@Database(entities = {GameListItem.class, TrackListItem.class}, version = 2)
 public abstract class GameDatabase extends RoomDatabase {
 
     private static GameDatabase instance;
@@ -17,7 +18,8 @@ public abstract class GameDatabase extends RoomDatabase {
             synchronized (GameDatabase.class) {
                 if (instance == null) {
                     instance = Room.databaseBuilder(context.getApplicationContext(),
-                            GameDatabase.class, "games.db")
+                            GameDatabase.class, "sonic_music.db")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
@@ -26,5 +28,7 @@ public abstract class GameDatabase extends RoomDatabase {
     }
 
     public abstract GameListItemDAO GameListItemDAO();
+
+    public abstract TrackListItemDAO TrackListItemDAO();
 
 }

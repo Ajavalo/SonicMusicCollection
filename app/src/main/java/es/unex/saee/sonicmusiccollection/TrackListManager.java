@@ -1,15 +1,16 @@
 package es.unex.saee.sonicmusiccollection;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,57 +21,64 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
+
+import es.unex.saee.sonicmusiccollection.database.GameDatabase;
+import es.unex.saee.sonicmusiccollection.database.TrackListCRUD;
 
 public class TrackListManager extends AppCompatActivity {
 
     // Add a ToDoItem Request Code
-    private static final int ADD_TODO_ITEM_REQUEST = 0;
+    private static final int ADD_TRACKLIST_ITEM_REQUEST = 0;
 
     private static final String FILE_NAME = "TodoManagerActivityData.txt";
     private static final String TAG = "Lab-UserInterface";
 
     // IDs for menu items
-    private static final int MENU_DELETE = Menu.FIRST;
-    private static final int MENU_DUMP = Menu.FIRST + 1;
+    private static final int MENU_SETTINGS = Menu.FIRST;
+    private static final int MENU_ABOUT = Menu.FIRST + 1;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private TrackListAdapter mAdapter;
 
+    TrackListCRUD crud;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-      //  setContentView(R.layout.activity_to_do_manager);
-      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
+        setContentView(R.layout.track_list_manager);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-      //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-       // fab.setOnClickListener(new View.OnClickListener() {
-         /*   public void onClick(View view) {
-                //TODO - Attach Listener to FloatingActionButton. Implement onClick()
-
-
-            }
-        });
-*/
-        //TODO - Get a reference to the RecyclerView
-
+        // - Get a reference to the RecyclerView
+        mRecyclerView = (RecyclerView) findViewById(R.id.track_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        //TODO - Set a Linear Layout Manager to the RecyclerView
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
 
-        //TODO - Create a new Adapter for the RecyclerView
+        // - Create a new Adapter for the RecyclerView
         // specify an adapter (see also next example)
+        mAdapter = new TrackListAdapter(this, new TrackListAdapter.OnItemClickListener() {
+            @Override public void onItemClick(TrackListItem item) {
+                Snackbar.make(TrackListManager.this.getCurrentFocus(), "Item "+item.getName()+" Clicked", Snackbar.LENGTH_LONG).show();
+                Music.play(getApplicationContext(), R.raw.gfz1);
+            }
+        });
 
-        //TODO - Attach the adapter to the RecyclerView
+        // - Attach the adapter to the RecyclerView
+        mRecyclerView.setAdapter(mAdapter);
 
+        //crud = TrackListCRUD.getInstance(this);
+        new PopulateDb().execute(new TrackListItem("T1"));
+        new PopulateDb().execute(new TrackListItem("T2"));
 
     }
 
@@ -108,20 +116,19 @@ public class TrackListManager extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+        //super.onCreateOptionsMenu(menu);
 
-        menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "Delete all");
-        menu.add(Menu.NONE, MENU_DUMP, Menu.NONE, "Dump to log");
+        getMenuInflater().inflate(R.menu.drawer, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_DELETE:
+            case MENU_SETTINGS:
                 mAdapter.clear();
                 return true;
-            case MENU_DUMP:
+            case MENU_ABOUT:
                 dump();
                 return true;
             default:
@@ -140,39 +147,43 @@ public class TrackListManager extends AppCompatActivity {
 
     // Load stored ToDoItems
     private void loadItems() {
-        BufferedReader reader = null;
-        try {
-            FileInputStream fis = openFileInput(FILE_NAME);
-            reader = new BufferedReader(new InputStreamReader(fis));
-
-            String title = null;
-            String priority = null;
-            String status = null;
-            Date date = null;
-
-            while (null != (title = reader.readLine())) {
-                priority = reader.readLine();
-                status = reader.readLine();
-               // date = TrackListItem.FORMAT.parse(reader.readLine());
-                //mAdapter.add(new TrackListItem(title, Priority.valueOf(priority),
-                  //      Status.valueOf(status), date));
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-  //      } catch (ParseException e) {
-    //        e.printStackTrace();
-        } finally {
-            if (null != reader) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        //BufferedReader reader = null;
+        TrackListCRUD crud = TrackListCRUD.getInstance(this);
+        List<TrackListItem> items = crud.getAll();
+        mAdapter.load(items);
+        new LoadFromDb().execute();
+//        try {
+//            FileInputStream fis = openFileInput(FILE_NAME);
+//            reader = new BufferedReader(new InputStreamReader(fis));
+//
+//            String title = null;
+//            String priority = null;
+//            String status = null;
+//            Date date = null;
+//
+//            while (null != (title = reader.readLine())) {
+//                priority = reader.readLine();
+//                status = reader.readLine();
+//               // date = TrackListItem.FORMAT.parse(reader.readLine());
+//                //mAdapter.add(new TrackListItem(title, Priority.valueOf(priority),
+//                  //      Status.valueOf(status), date));
+//            }
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//  //      } catch (ParseException e) {
+//    //        e.printStackTrace();
+//        } finally {
+//            if (null != reader) {
+//                try {
+//                    reader.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     // Save ToDoItems to file
@@ -204,6 +215,41 @@ public class TrackListManager extends AppCompatActivity {
             e.printStackTrace();
         }
         Log.i(TAG, msg);
+    }
+
+    private class LoadFromDb extends AsyncTask<Void, Void, List<TrackListItem>> {
+
+        @Override
+        protected List<TrackListItem> doInBackground(final Void... voids) {
+            GameDatabase gameDb = GameDatabase.getDatabase(TrackListManager.this);
+            List<TrackListItem> tracks = gameDb.TrackListItemDAO().getAll();
+            return tracks;
+        }
+
+        @Override
+        protected void onPostExecute (List<TrackListItem> tracks){
+            super.onPostExecute(tracks);
+            mAdapter.load(tracks);
+        }
+
+    }
+
+    private class PopulateDb extends AsyncTask<TrackListItem, Void, TrackListItem> {
+
+        @Override
+        protected TrackListItem doInBackground(final TrackListItem... tracks) {
+            GameDatabase gameDb = GameDatabase.getDatabase(TrackListManager.this);
+            long id = gameDb.TrackListItemDAO().insert(tracks[0]);
+            tracks[0].setId(id);
+            return tracks[0];
+        }
+
+        @Override
+        protected void onPostExecute (TrackListItem track){
+            super.onPostExecute(track);
+            mAdapter.add(track);
+        }
+
     }
 
 }

@@ -9,31 +9,31 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.unex.saee.sonicmusiccollection.GameListItem;
+import es.unex.saee.sonicmusiccollection.TrackListItem;
 
-public class GameListCRUD {
+public class TrackListCRUD {
 
     private DbHelper mDbHelper;
-    private static GameListCRUD mInstance;
+    private static TrackListCRUD mInstance;
 
-    private GameListCRUD(Context context) {
+    private TrackListCRUD(Context context) {
         mDbHelper = new DbHelper(context);
     }
 
-    public static GameListCRUD getInstance(Context context){
+    public static TrackListCRUD getInstance(Context context){
         if (mInstance == null)
-            mInstance = new GameListCRUD(context);
+            mInstance = new TrackListCRUD(context);
 
         return mInstance;
     }
 
-    public List<GameListItem> getAll(){
+    public List<TrackListItem> getAll(){
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String[] projection = {
-                DBContract.GameListItem._ID,
-                DBContract.GameListItem.COLUMN_NAME_TITLE,
-                DBContract.GameListItem.COLUMN_NAME_ABBV/*,
+                DBContract.TrackListItem._ID,
+                DBContract.TrackListItem.COLUMN_NAME_NAME/*,
+                DBContract.TrackListItem.COLUMN_NAME_ABBV,
                 DBContract.GameListItem.COLUMN_NAME_PRIORITY,
                 DBContract.GameListItem.COLUMN_NAME_DATE*/
         };
@@ -44,7 +44,7 @@ public class GameListCRUD {
         String sortOrder = null;
 
         Cursor cursor = db.query(
-                DBContract.GameListItem.TABLE_NAME,           // The table to query
+                DBContract.TrackListItem.TABLE_NAME,           // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
                 selectionArgs,                            // The values for the WHERE clause
@@ -54,31 +54,31 @@ public class GameListCRUD {
         );
 
 
-        ArrayList<GameListItem> items = new ArrayList<>();
+        ArrayList<TrackListItem> items = new ArrayList<>();
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
             do {
-                items.add(getGameListItemFromCursor(cursor));
+                items.add(getTrackListItemFromCursor(cursor));
             } while (cursor.moveToNext());
         }
         cursor.close();
         return items;
     }
 
-    public long insert(GameListItem item){
+    public long insert(TrackListItem item){
         // Gets the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(DBContract.GameListItem.COLUMN_NAME_TITLE, item.getTitle());
-        values.put(DBContract.GameListItem.COLUMN_NAME_ABBV, item.getAbbv());
+        values.put(DBContract.TrackListItem.COLUMN_NAME_NAME, item.getName());
+        //values.put(DBContract.TrackListItem.COLUMN_NAME_ABBV, item.getAbbv());
         //values.put(DBContract.GameListItem.COLUMN_NAME_STATUS, item.getStatus().name());
         //values.put(DBContract.GameListItem.COLUMN_NAME_DATE, ToDoItem.FORMAT.format(item.getDate()));
 
 
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(DBContract.GameListItem.TABLE_NAME, null, values);
+        long newRowId = db.insert(DBContract.TrackListItem.TABLE_NAME, null, values);
 
         return newRowId;
     }
@@ -93,7 +93,7 @@ public class GameListCRUD {
         String[] selectionArgs = null;
 
         // Issue SQL statement.
-        db.delete(DBContract.GameListItem.TABLE_NAME, selection, selectionArgs);
+        db.delete(DBContract.TrackListItem.TABLE_NAME, selection, selectionArgs);
     }
 
     /*public int updateStatus(long ID, GameListItem.Status status) {
@@ -122,17 +122,17 @@ public class GameListCRUD {
         if (mDbHelper!=null) mDbHelper.close();
     }
 
-    public static GameListItem getGameListItemFromCursor(Cursor cursor) {
+    public static TrackListItem getTrackListItemFromCursor(Cursor cursor) {
 
-        long ID = cursor.getInt(cursor.getColumnIndex(DBContract.GameListItem._ID));
-        String title = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_TITLE));
-        String abbv = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_ABBV));
+        long ID = cursor.getInt(cursor.getColumnIndex(DBContract.TrackListItem._ID));
+        String name = cursor.getString(cursor.getColumnIndex(DBContract.TrackListItem.COLUMN_NAME_NAME));
+        //String abbv = cursor.getString(cursor.getColumnIndex(DBContract.TrackListItem.COLUMN_NAME_ABBV));
         //String status = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_STATUS));
         //String date = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_DATE));
 
-        GameListItem item = new GameListItem(ID,title,abbv/*,status,date*/);
+        TrackListItem item = new TrackListItem(ID,name/*,abbv,status,date*/);
 
-        Log.d("GameListItemCRUD",item.toLog());
+        Log.d("TrackListItemCRUD",item.toLog());
 
         return item;
     }

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.unex.saee.sonicmusiccollection">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,9 +30,8 @@
             android:name=".About"
             android:label=""></activity>
         <activity
-            android:name=".drawer.DrawerActivity"
-            android:label="@string/title_activity_drawer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".TrackListManager"
+            android:label=""></activity>
     </application>
 
 </manifest>

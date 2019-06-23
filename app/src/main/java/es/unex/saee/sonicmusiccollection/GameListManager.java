@@ -39,8 +39,8 @@ public class GameListManager extends AppCompatActivity
     private static final String TAG = "Lab-UserInterface";
 
     // IDs for menu items
-    private static final int MENU_DELETE = Menu.FIRST;
-    private static final int MENU_DUMP = Menu.FIRST + 1;
+    private static final int MENU_SETTINGS = Menu.FIRST;
+    private static final int MENU_ABOUT = Menu.FIRST + 1;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -145,21 +145,23 @@ public class GameListManager extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+        //super.onCreateOptionsMenu(menu);
 
-        menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "Delete all");
-        menu.add(Menu.NONE, MENU_DUMP, Menu.NONE, "Dump to log");
+        //menu.add(Menu.NONE, MENU_DELETE, Menu.NONE, "Delete all");
+        //menu.add(Menu.NONE, MENU_DUMP, Menu.NONE, "Dump to log");
+        getMenuInflater().inflate(R.menu.drawer, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_DELETE:
+            case MENU_SETTINGS:
                 mAdapter.clear();
                 return true;
-            case MENU_DUMP:
-                dump();
+            case R.id.about_option:
+                //dump();
+                new About().show(getFragmentManager(),"ALERT DIALOG");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -172,14 +174,14 @@ public class GameListManager extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_list) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_favs) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.nav_about) {
+            new About().show(getFragmentManager(),"ALERT DIALOG");
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

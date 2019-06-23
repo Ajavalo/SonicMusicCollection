@@ -107,7 +107,7 @@ public class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHo
 
             itemView.setOnClickListener(new View.OnClickListener() {
 
-                //TODO - Open selected game
+                //Open selected Game
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(gameListItem);
