@@ -57,9 +57,9 @@ public class GameListCRUD {
         ArrayList<GameListItem> items = new ArrayList<>();
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
-            do {
+            /*do {
                 items.add(getGameListItemFromCursor(cursor));
-            } while (cursor.moveToNext());
+            } while (cursor.moveToNext());*/
         }
         cursor.close();
         return items;
@@ -122,7 +122,7 @@ public class GameListCRUD {
         if (mDbHelper!=null) mDbHelper.close();
     }
 
-    public static GameListItem getGameListItemFromCursor(Cursor cursor) {
+    /*public static GameListItem getGameListItemFromCursor(Cursor cursor) {
 
         long ID = cursor.getInt(cursor.getColumnIndex(DBContract.GameListItem._ID));
         String title = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_TITLE));
@@ -130,11 +130,11 @@ public class GameListCRUD {
         //String status = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_STATUS));
         //String date = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_DATE));
 
-        GameListItem item = new GameListItem(ID,title,abbv/*,status,date*/);
+        GameListItem item; = new GameListItem(ID,title,abbv/*,status,dat);
 
         Log.d("GameListItemCRUD",item.toLog());
 
         return item;
-    }
+    }*/
 
 }

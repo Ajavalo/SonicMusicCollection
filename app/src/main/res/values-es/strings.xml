@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_option">Preferencias</string>
+    <string name="languageTitle">Selección de Idioma</string>
+    <string name="languageChooseTitle">Idioma</string>
+    <string name="languageSummary">Elige un idioma</string>
+    <string name="themeTitle">Selección de tema</string>
+    <string name="themeChooseTitle">Tema</string>
+    <string name="themeSummary">Elige un tema</string>
+    <string name="about_option">Acerca de</string>
+    <string name="aboutMessage">Aplicación desarrollada por Ajavalo.\n Sonic es propiedad de SEGA.</string>
+    <string name="see_fav">Ver Favoritos</string>
+    <string name="see_all">Ver Todos</string>
+    <string name="tracks_button">Pistas</string>
+    <string name="desc_button">Descripción</string>
+    <string name="navigation_drawer_open">Abrir navigation drawer</string>
+    <string name="navigation_drawer_close">Cerrar navigation drawer</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Cabecera</string>
+    <string name="action_settings">Preferencias</string>
+</resources>

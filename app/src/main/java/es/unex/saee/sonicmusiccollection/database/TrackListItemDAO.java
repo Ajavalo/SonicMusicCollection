@@ -20,4 +20,7 @@ public interface TrackListItemDAO {
     @Query("DELETE FROM track")
     public void deleteAll();
 
+    @Query("SELECT * FROM track WHERE id = 1")
+    public List<TrackListItem> getFromGame();
+
 }

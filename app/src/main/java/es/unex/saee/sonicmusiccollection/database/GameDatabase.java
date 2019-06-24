@@ -8,7 +8,7 @@ import android.content.Context;
 import es.unex.saee.sonicmusiccollection.GameListItem;
 import es.unex.saee.sonicmusiccollection.TrackListItem;
 
-@Database(entities = {GameListItem.class, TrackListItem.class}, version = 2)
+@Database(entities = {GameListItem.class, TrackListItem.class}, version = 3)
 public abstract class GameDatabase extends RoomDatabase {
 
     private static GameDatabase instance;

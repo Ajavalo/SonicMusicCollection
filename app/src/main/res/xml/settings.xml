@@ -7,7 +7,7 @@
             android:summary="@string/languageSummary"
             android:entries="@array/languages"
             android:entryValues="@array/langCodes"
-            android:dialogTitle="@string/languageDialogTitle"/>
+            android:dialogTitle="@string/languageSummary"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/themeTitle">
         <ListPreference
@@ -16,6 +16,6 @@
             android:summary="@string/themeSummary"
             android:entries="@array/themes"
             android:entryValues="@array/themeCodes"
-            android:dialogTitle="@string/themeDialogTitle"/>
+            android:dialogTitle="@string/themeSummary"/>
     </PreferenceCategory>
 </PreferenceScreen>

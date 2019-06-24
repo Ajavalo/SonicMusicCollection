@@ -77,8 +77,8 @@ public class TrackListManager extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         //crud = TrackListCRUD.getInstance(this);
-        new PopulateDb().execute(new TrackListItem("T1"));
-        new PopulateDb().execute(new TrackListItem("T2"));
+        //new PopulateDb().execute(new TrackListItem("T1"));
+        //new PopulateDb().execute(new TrackListItem("T2"));
 
     }
 
@@ -100,8 +100,8 @@ public class TrackListManager extends AppCompatActivity {
 
         // Load saved ToDoItems, if necessary
 
-        if (mAdapter.getItemCount() == 0)
-            loadItems();
+        //if (mAdapter.getItemCount() == 0)
+          //  loadItems();
     }
 
     @Override
@@ -217,6 +217,19 @@ public class TrackListManager extends AppCompatActivity {
         Log.i(TAG, msg);
     }
 
+    public void PopulateDb(){
+        new ClearDb().execute();
+        new InsertIntoDb().execute(new TrackListItem(1, "Green Hill Zone Act 1", "GHZ1"));
+        new InsertIntoDb().execute(new TrackListItem(1, "Marble Zone Act 1", "MZ1"));
+        new InsertIntoDb().execute(new TrackListItem(1, "Spring Yard Zone Act 1", "SYZ1"));
+        new InsertIntoDb().execute(new TrackListItem(2, "Emerald Hill Zone Act 1", "EHZ1"));
+        new InsertIntoDb().execute(new TrackListItem(2, "Chemical Plant Zone Act 1", "CPZ1"));
+        new InsertIntoDb().execute(new TrackListItem(2, "Aquatic Ruin Zone Act 1", "ARZ1"));
+        new InsertIntoDb().execute(new TrackListItem(3, "Angel Island Zone Act 1", "AIZ1"));
+        new InsertIntoDb().execute(new TrackListItem(3, "Hydrocity Zone Act 1", "HZ1"));
+        new InsertIntoDb().execute(new TrackListItem(3, "Marble Garden Zone Act 1", "MGZ1"));
+    }
+
     private class LoadFromDb extends AsyncTask<Void, Void, List<TrackListItem>> {
 
         @Override
@@ -234,7 +247,7 @@ public class TrackListManager extends AppCompatActivity {
 
     }
 
-    private class PopulateDb extends AsyncTask<TrackListItem, Void, TrackListItem> {
+    private class InsertIntoDb extends AsyncTask<TrackListItem, Void, TrackListItem> {
 
         @Override
         protected TrackListItem doInBackground(final TrackListItem... tracks) {
@@ -247,7 +260,24 @@ public class TrackListManager extends AppCompatActivity {
         @Override
         protected void onPostExecute (TrackListItem track){
             super.onPostExecute(track);
-            mAdapter.add(track);
+            //mAdapter.add(track);
+        }
+
+    }
+
+    private class ClearDb extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final Void... voids) {
+            GameDatabase gameDb = GameDatabase.getDatabase(TrackListManager.this);
+            gameDb.TrackListItemDAO().deleteAll();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (Void v){
+            super.onPostExecute(v);
+            //mAdapter.clear();
         }
 
     }

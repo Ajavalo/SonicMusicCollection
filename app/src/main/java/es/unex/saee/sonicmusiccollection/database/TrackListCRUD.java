@@ -57,9 +57,9 @@ public class TrackListCRUD {
         ArrayList<TrackListItem> items = new ArrayList<>();
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
-            do {
+            /*do {
                 items.add(getTrackListItemFromCursor(cursor));
-            } while (cursor.moveToNext());
+            } while (cursor.moveToNext());*/
         }
         cursor.close();
         return items;
@@ -122,7 +122,7 @@ public class TrackListCRUD {
         if (mDbHelper!=null) mDbHelper.close();
     }
 
-    public static TrackListItem getTrackListItemFromCursor(Cursor cursor) {
+    /*public static TrackListItem getTrackListItemFromCursor(Cursor cursor) {
 
         long ID = cursor.getInt(cursor.getColumnIndex(DBContract.TrackListItem._ID));
         String name = cursor.getString(cursor.getColumnIndex(DBContract.TrackListItem.COLUMN_NAME_NAME));
@@ -130,11 +130,11 @@ public class TrackListCRUD {
         //String status = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_STATUS));
         //String date = cursor.getString(cursor.getColumnIndex(DBContract.GameListItem.COLUMN_NAME_DATE));
 
-        TrackListItem item = new TrackListItem(ID,name/*,abbv,status,date*/);
+        TrackListItem item = new TrackListItem(ID,name/*,abbv,status,date);
 
         Log.d("TrackListItemCRUD",item.toLog());
 
         return item;
-    }
+    }*/
 
 }

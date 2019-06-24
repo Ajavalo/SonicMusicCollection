@@ -7,11 +7,12 @@
     <string name="themeTitle">Theme selection</string>
     <string name="themeChooseTitle">Theme</string>
     <string name="themeSummary">Choose a theme</string>
-    <string name="languageDialogTitle">Choose a language</string>
-    <string name="themeDialogTitle">Choose a theme</string>
     <string name="about_option">About</string>
-    <string name="aboutMessage">about</string>
-    <string name="creditsMessage">credits</string>
+    <string name="aboutMessage">App developed by Ajavalo.\n Sonic is owned by SEGA.</string>
+    <string name="see_fav">See Favourites</string>
+    <string name="see_all">See All Games</string>
+    <string name="tracks_button">Tracks</string>
+    <string name="desc_button">Description</string>
     <string name="title_activity_drawer">DrawerActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

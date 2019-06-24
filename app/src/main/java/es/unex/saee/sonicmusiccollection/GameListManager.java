@@ -19,12 +19,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import es.unex.saee.sonicmusiccollection.database.GameDatabase;
@@ -46,7 +48,8 @@ public class GameListManager extends AppCompatActivity
     private RecyclerView.LayoutManager mLayoutManager;
     private GameListAdapter mAdapter;
 
-    GameListCRUD crud;
+    //private List<GameListItem> gamelist = new ArrayList<GameListItem>();
+    Boolean fav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class GameListManager extends AppCompatActivity
         mAdapter = new GameListAdapter(this, new GameListAdapter.OnItemClickListener() {
             @Override public void onItemClick(GameListItem item) {
                 Snackbar.make(GameListManager.this.getCurrentFocus(), "Item "+item.getTitle()+" Clicked", Snackbar.LENGTH_LONG).show();
-                gotoDescription(item.getTitle());
+                gotoDescription(item);
             }
         });
 
@@ -88,15 +91,31 @@ public class GameListManager extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //PopulateDb(); /*Uncomment to clear the Game List*/
+
+        Intent intent = getIntent();
+        fav = intent.getBooleanExtra("FAV", false);
+
+        Button b = (Button) findViewById(R.id.tab_button);
+
+        if(fav){
+            new LoadFavsFromDb().execute();
+            b.setText(R.string.see_all);
+        }
+        else{
+            new LoadFromDb().execute();
+            b.setText(R.string.see_fav);
+        }
+
         //crud = GameListCRUD.getInstance(this);
-        new PopulateDb().execute(new GameListItem("Juego 1", "JG1"));
-        new PopulateDb().execute(new GameListItem("Juego 2", "JG2"));
+        //new PopulateDb().execute(new GameListItem("Juego 1", "JG1"));
+        //new PopulateDb().execute(new GameListItem("Juego 2", "JG2"));
 
     }
 
-    private void gotoDescription(String title){
+    private void gotoDescription(GameListItem item){
         Intent intent = new Intent(this, es.unex.saee.sonicmusiccollection.GameDescription.class);
-        intent.putExtra("GAME_MESSAGE", title);
+        GameListItem.packageIntent(intent, item.getId(), item.getTitle(), item.getAbbv(), item.getYear(), item.getSystem(), item.getDesc(), item.getDesc_es(), item.getFav());
         startActivity(intent);
 
     }
@@ -119,7 +138,7 @@ public class GameListManager extends AppCompatActivity
 
         // Load saved Items, if necessary
 
-        if (mAdapter.getItemCount() == 0)
+        //if (mAdapter.getItemCount() == 0)
             loadItems();
     }
 
@@ -156,8 +175,9 @@ public class GameListManager extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_SETTINGS:
-                mAdapter.clear();
+            case R.id.settings_option:
+                Intent intent = new Intent(this, es.unex.saee.sonicmusiccollection.Settings.class);
+                startActivity(intent);
                 return true;
             case R.id.about_option:
                 //dump();
@@ -175,11 +195,16 @@ public class GameListManager extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_list) {
-            // Handle the camera action
+            Intent intent = new Intent(this, es.unex.saee.sonicmusiccollection.GameListManager.class);
+            intent.putExtra("FAV", false);
+            startActivity(intent);
         } else if (id == R.id.nav_favs) {
-
+            Intent intent = new Intent(this, es.unex.saee.sonicmusiccollection.GameListManager.class);
+            intent.putExtra("FAV", true);
+            startActivity(intent);
         } else if (id == R.id.nav_settings) {
-
+            Intent intent = new Intent(this, es.unex.saee.sonicmusiccollection.Settings.class);
+            startActivity(intent);
         } else if (id == R.id.nav_about) {
             new About().show(getFragmentManager(),"ALERT DIALOG");
         } else if (id == R.id.nav_share) {
@@ -207,7 +232,8 @@ public class GameListManager extends AppCompatActivity
 //        GameListCRUD crud = GameListCRUD.getInstance(this);
 //        List<GameListItem> items = crud.getAll();
 //        mAdapter.load(items);
-        new LoadFromDb().execute();
+        //if(fav) new LoadFavsFromDb().execute();
+        //else new LoadFromDb().execute();
     }
 
     // Save ToDoItems to file
@@ -241,6 +267,14 @@ public class GameListManager extends AppCompatActivity
         Log.i(TAG, msg);
     }
 
+    private void PopulateDb(){
+        new ClearDb().execute();
+        new InsertIntoDb().execute(new GameListItem("Sonic 1", "STH1", 1991, "MD/GEN", "The first game.", "El primer juego.", 0));
+        new InsertIntoDb().execute(new GameListItem("Sonic 2", "STH2", 1992, "MD/GEN", "The second game.", "El segundo juego.", 0));
+        new InsertIntoDb().execute(new GameListItem("Sonic 3", "STH3", 1994, "MD/GEN", "The third game.", "El tercer juego.", 0));
+        new TrackListManager().PopulateDb();
+    }
+
     private class LoadFromDb extends AsyncTask<Void, Void, List<GameListItem>> {
 
         @Override
@@ -254,11 +288,29 @@ public class GameListManager extends AppCompatActivity
         protected void onPostExecute (List<GameListItem> games){
             super.onPostExecute(games);
             mAdapter.load(games);
+            //gamelist = games;
         }
 
     }
 
-    private class PopulateDb extends AsyncTask<GameListItem, Void, GameListItem> {
+    private class LoadFavsFromDb extends AsyncTask<Void, Void, List<GameListItem>> {
+
+        @Override
+        protected List<GameListItem> doInBackground(final Void... voids) {
+            GameDatabase gameDb = GameDatabase.getDatabase(GameListManager.this);
+            List<GameListItem> games = gameDb.GameListItemDAO().getFavs();
+            return games;
+        }
+
+        @Override
+        protected void onPostExecute (List<GameListItem> games){
+            super.onPostExecute(games);
+            mAdapter.load(games);
+        }
+
+    }
+
+    private class InsertIntoDb extends AsyncTask<GameListItem, Void, GameListItem> {
 
         @Override
         protected GameListItem doInBackground(final GameListItem... games) {
@@ -272,6 +324,40 @@ public class GameListManager extends AppCompatActivity
         protected void onPostExecute (GameListItem game){
             super.onPostExecute(game);
             mAdapter.add(game);
+        }
+
+    }
+
+    private class ClearDb extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(final Void... voids) {
+            GameDatabase gameDb = GameDatabase.getDatabase(GameListManager.this);
+            gameDb.GameListItemDAO().deleteAll();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute (Void v){
+            super.onPostExecute(v);
+            mAdapter.clear();
+        }
+
+    }
+
+    private class UpdateFavDb extends AsyncTask<GameListItem, Void, GameListItem> {
+
+        @Override
+        protected GameListItem doInBackground(final GameListItem... games) {
+            GameDatabase gameDb = GameDatabase.getDatabase(GameListManager.this);
+            int id = gameDb.GameListItemDAO().update(games[0]);
+            return games[0];
+        }
+
+        @Override
+        protected void onPostExecute (GameListItem game){
+            super.onPostExecute(game);
+            //mAdapter.add(game);
         }
 
     }
